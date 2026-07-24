@@ -1,3 +1,6 @@
+# Lottery
+
+## Specification
 Consider a lottery where two players bet an equal amount of crypto-currency, and the winner - who is chosen fairly between the two players - redeems the whole pot.
 
 Since smart contract are deterministic and external sources of randomness (e.g., random number oracles) might be biased, to achieve fairness we follow a *commit-reveal-punish* protocol, where both players first commit to the hash of the secret, then reveal their secret (which must be a preimage of the committed hash), and finally the winner is computed as a fair function of the secrets.
@@ -14,3 +17,14 @@ The protocol followed by (honest) players is the following:
 6. once `player1` has revealed, `player2` reveals the secret;
 7. if `player2` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal` plus a fixed constant);
 8. once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot.
+
+## Properties
+
+## Ground truth
+
+- [Ground truth](ground-truth.csv)
+- [Solcmc/z3](solcmc-z3.csv)
+- [Solcmc/Eldarica](solcmc-eld.csv)
+- [Certora](certora.csv)
+
+## Experiments
