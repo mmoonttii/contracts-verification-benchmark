@@ -9,27 +9,25 @@ contract Lottery {
     address payable player1; 
     address payable winner;
 
-    bytes32 hash0;
-    bytes32 hash1;
+    bytes32 public hash0;
+    bytes32 public hash1;
 
-    string secret0;
-    string secret1;
+    string public secret0;
+    string public secret1;
 
-    uint256 bet_amount;
+    uint256 public bet_amount;
 
     enum Status {
         Join0,
         Join1,
-        Commit0,
-        Commit1,
 	    Reveal0,
 	    Reveal1,
 	    Win,
         End
     }
 
-    uint end_join;
-    uint end_reveal;
+    uint public end_join;
+    uint public end_reveal;
     
     Status public status;
     
@@ -45,7 +43,7 @@ contract Lottery {
 
     /// `player1` joins the lottery by paying the bet and committing to a secret
     function join0(bytes32 h) payable public {
-        require (status==Status.Join0);
+        require (status == Status.Join0);
         require (msg.value > MINIMUM_BET);
 
         player0 = payable(msg.sender);
@@ -56,7 +54,7 @@ contract Lottery {
 
     /// `player2` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
     function join1(bytes32 h) payable public {
-        require (status==Status.Join1);
+        require (status == Status.Join1);
         require (h!=hash0);
         require (msg.value == bet_amount);
 
@@ -67,7 +65,7 @@ contract Lottery {
 
     /// if `player2` has not joined, `player1` can redeem their bet after a given deadline (`end_commit`).
     function redeem0_nojoin1() public {
-	    require (status==Status.Join1);
+	    require (status == Status.Join1);
         require (block.number > end_join);
 
         (bool success,) = player0.call{value: address(this).balance}("");
@@ -77,9 +75,9 @@ contract Lottery {
     
     /// `player1` reveals the first secret
     function reveal0(string memory s) public {
-        require (status==Status.Reveal0);
-        require (msg.sender==player0);
-        require(keccak256(abi.encodePacked(s))==hash0);
+        require (status == Status.Reveal0);
+        require (msg.sender == player0);
+        require(hashing(s) == hash0);
 
         secret0 = s;
 	    status = Status.Reveal1;
@@ -87,7 +85,7 @@ contract Lottery {
 
     /// if `player1` has not revealed, `player2` can redeem both players' bets after a given deadline (`end_reveal`); 
     function redeem1_noreveal0() public {
-	    require (status==Status.Reveal0);
+	    require (status == Status.Reveal0);
         require (block.number > end_reveal);
 
         (bool success,) = player1.call{value: address(this).balance}("");
@@ -97,9 +95,9 @@ contract Lottery {
     
     /// once `player1` has revealed, `player2` reveals the secret
     function reveal1(string memory s) public {
-        require (status==Status.Reveal1);
-        require (msg.sender==player1);
-        require(keccak256(abi.encodePacked(s))==hash1);
+        require (status == Status.Reveal1);
+        require (msg.sender == player1);
+        require(hashing(s)==hash1);
 
         secret1 = s;
 	    status = Status.Win;
@@ -115,18 +113,34 @@ contract Lottery {
 	    status = Status.End;
     } 
     
+    function computeWinner(address payable p0, address payable p1, string memory s0, string memory s1) public pure returns (address payable) {
+        uint256 l0 = bytes(s0).length;
+        uint256 l1 = bytes(s1).length;
+        
+        address payable w;
+        
+        if ((l0+l1) % 2 == 0)  w = p0;
+        else w = p1;
+
+        return w;
+    }
+
     /// once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot
     function win() public {
         require (status==Status.Win);
 	
-        uint256 l0 = bytes(secret0).length;
-        uint256 l1 = bytes(secret1).length;
-
-        if ((l0+l1) % 2 == 0)  winner = player0;
-        else winner = player1;
+        winner = computeWinner(player0, player1, secret0, secret1);
 
         (bool success,) = winner.call{value: address(this).balance}("");
         require (success, "Transfer failed.");
 	    status = Status.End;
+    }
+
+    function hashing(string memory s) public pure returns (bytes32){
+        return keccak256(abi.encodePacked(s));
+    }
+
+    function _status() public view returns (uint8) {
+        return uint8(status);
     }
 }

@@ -19,8 +19,13 @@ The protocol followed by (honest) players is the following:
 8. once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot.
 
 ## Properties
+- **no-incentives-to-abort**: After a non-reverting `reveal0(secret)` transaction, if the honest protocol would result in player 1 losing and no `reveal1(s)` transaction is successful before the deadline, the contract guarantees that player 0 can call `redeem0_noreveal1()` and the bets of both players are transferred to player0
+- **no-incentives-to-abort-eoa**: After a non-reverting `reveal0(secret)` transaction, where player0 is an EOA, if the honest protocol would result in player 1 losing and no `reveal1(s)` transaction is successful before the deadline, the contract guarantees that player 0 can call `redeem0_noreveal1()` and the bets of both players are transferred to player0
 
-## Ground truth
+## Versions
+- **v1**: conformant to specification
+
+## Verification data
 
 - [Ground truth](ground-truth.csv)
 - [Solcmc/z3](solcmc-z3.csv)
