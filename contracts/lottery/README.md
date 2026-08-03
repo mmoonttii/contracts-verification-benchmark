@@ -25,6 +25,8 @@ The protocol followed by (honest) players is the following:
 - **redeem0-noreveal1-fairness-eoa**: Assuming `player0` and `player1` behave as EOAs: if the contract is in `Reveal1` status and evaluating the fair function on `secret0` and `player1`'s secret that is not yet revealed, would result in `player0` being the winner; then a successful `redeem0_noreveal1()` transaction strictly increases `player0`'s ETH balance, leaves player1's ETH balance unchanged, and strictly decreases the contract's ETH balance.
 - **sequentiality-of-protocol**: For each state-transition function f in the protocol, a transaction call to f will revert if the contract is a earlier state than the one it is meant to transition out of with the function f
 - **state-irreversible**: For every non-reverting transaction of the contract's state-transition functions, the contract's `status` after the transaction is strictly greater than its `status` before the call
+- **win-transaction-env-independent**: The outcome of a non-reverting `win()` transaction is independent from environment-dependent state
+- **winner-computation-env-independent**: The results of evaluating the fair win function are independent from environment-dependent state
 - **wrong-preimage-reverts**: If a `reveal*(s)` transaction does not revert, then `s` is a preimage of the committed hash
 
 ## Versions

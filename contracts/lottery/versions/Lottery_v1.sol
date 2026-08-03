@@ -5,9 +5,9 @@ pragma solidity >= 0.8.2;
 contract Lottery {
     address public owner;
 
-    address payable player0;
-    address payable player1; 
-    address payable winner;
+    address payable public player0;
+    address payable public player1; 
+    address payable public winner;
 
     bytes32 public hash0;
     bytes32 public hash1;

@@ -3,5 +3,8 @@ no-incentives-to-abort,v1,0,"This property should always be false, since a contr
 no-incentives-to-abort-eoa,v1,1,
 redeem0-noreveal1-fairness,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
 redeem0-noreveal1-fairness-eoa,v1,1,
+sequentiality-of-protocol,v1,1,
 state-irreversible,v1,1,
+winner-computation-env-independent,v1,1,
+win-transaction-env-independent,v1,1,
 wrong-preimage-reverts,v1,1,
