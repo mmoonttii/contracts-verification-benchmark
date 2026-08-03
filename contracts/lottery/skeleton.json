@@ -2,6 +2,7 @@
     "name": "Lottery",
     "specification": "file:specification.md" ,
     "properties": {
+        "honest-protocol-deadlock-freedom": "For each intermediate protocol state `s`, there exists a path to completion of the honest protocol from `s` to `End` that empties the contract's balance to zero",
         "no-incentives-to-abort": "After a non-reverting `reveal0(secret)` transaction, if the honest protocol would result in player 1 losing and no `reveal1(s)` transaction is successful before the deadline, the contract guarantees that player 0 can call `redeem0_noreveal1()` and the bets of both players are transferred to player0",
         "no-incentives-to-abort-eoa": "After a non-reverting `reveal0(secret)` transaction, where player0 is an EOA, if the honest protocol would result in player 1 losing and no `reveal1(s)` transaction is successful before the deadline, the contract guarantees that player 0 can call `redeem0_noreveal1()` and the bets of both players are transferred to player0",
         "one-step-deadlock-freedom": "For each state with a positive balance of the contract, there exist a non-reverting transaction that when executed leaves the contract ETH balance at zero",

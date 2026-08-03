@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 // For each state with a positive balance of the contract, there exist a non-reverting transaction that when executed
 // leaves the contract ETH balance at zero
 
