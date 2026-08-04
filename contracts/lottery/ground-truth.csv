@@ -1,9 +1,11 @@
 property,version,truth,footnote-md
-honest-player-profitability,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
+honest-player-profitability,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
 honest-player-profitability-eoa,v1,1
-no-incentives-to-abort,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
+no-incentives-to-abort,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
 no-incentives-to-abort-eoa,v1,1,
 one-step-deadlock-freedom,v1,1,
+owner-impartiality-eoa,v1,1,
+owner-impartiality,v1,0,"The low-level calls to the receiver may revert."
 redeem0-noreveal1-fairness,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
 redeem0-noreveal1-fairness-eoa,v1,1,
 sequentiality-of-protocol,v1,1,
