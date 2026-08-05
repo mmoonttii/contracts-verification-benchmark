@@ -5,8 +5,8 @@
 // then a successful `redeem0_noreveal1()` transaction strictly increases `player0`'s ETH balance, leaves player1's ETH
 // balance unchanged, and strictly decreases the contract's ETH balance.
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/following-protocol-pays-out-eoa.spec --link Lottery:player0=EOA --link Lottery:player1=EOA --optimistic_hashing
-rule following_protocol_pays_out {
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/redeem0-noreveal1-fairness-eoa.spec --link Lottery:player0=EOA --link Lottery:player1=EOA --optimistic_hashing
+rule redeem0_noreveal1_fairness_eoa {
     env e;
     require _status(e) == 3;
     require e.block.number > currentContract.end_reveal;

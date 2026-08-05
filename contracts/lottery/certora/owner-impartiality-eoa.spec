@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 // Assuming `player0` and `player1` are EOAs: for every non-reverting transaction, from any state where a winner is not
 // yet determined, if the sender of the transaction is `owner` and such transaction changes the state variables of the
 // contract then the same transaction, made by any non-owner address, under completely identical environments and
 // storage, except from `msg.sender` must not revert and produce the same state modifications  
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/owner-impartiality.spec --optimistic_hashing --link Lottery:player0=EOA --link Lottery:player1=EOA
-rule owner_impartiality(method f)
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/owner-impartiality-eoa.spec --optimistic_hashing --link Lottery:player0=EOA --link Lottery:player1=EOA
+rule owner_impartiality_eoa(method f)
 filtered {
     f -> !f.isView && !f.isPure
 } {

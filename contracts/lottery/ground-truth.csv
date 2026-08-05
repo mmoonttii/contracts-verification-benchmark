@@ -1,15 +1,30 @@
 property,version,truth,footnote-md
-honest-player-profitability,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
-honest-player-profitability-eoa,v1,1
+honest-player-profitability-redeem0-nojoin1,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
+honest-player-profitability-redeem1-noreveal0,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
+honest-player-profitability-redeem0-noreveal1,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
+honest-player-profitability-eoa-redeem0-nojoin1,v1,1
+honest-player-profitability-eoa-redeem1-noreveal0,v1,1
+honest-player-profitability-eoa-redeem0-noreveal1,v1,1
+honest-protocol-deadlock-freedom-join1,v1,1,
+honest-protocol-deadlock-freedom-reveal0,v1,1,
+honest-protocol-deadlock-freedom-reveal1,v1,1,
+honest-protocol-deadlock-freedom-win,v1,1,
 no-incentives-to-abort,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct` and the low-level calls to the receiver may revert."
 no-incentives-to-abort-eoa,v1,1,
-one-step-deadlock-freedom,v1,1,
+one-step-deadlock-freedom-join1,v1,1,
+one-step-deadlock-freedom-reveal0,v1,1,
+one-step-deadlock-freedom-reveal1,v1,1,
+one-step-deadlock-freedom-win,v1,1,
 owner-impartiality-eoa,v1,1,
 owner-impartiality,v1,0,"The low-level calls to the receiver may revert."
 redeem0-noreveal1-fairness,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
 redeem0-noreveal1-fairness-eoa,v1,1,
-sequentiality-of-protocol,v1,1,
+sequentiality-of-protocol-join1,v1,1,
+sequentiality-of-protocol-reveal0,v1,1,
+sequentiality-of-protocol-reveal1,v1,1,
+sequentiality-of-protocol-win,v1,1,
 state-irreversible,v1,1,
 winner-computation-env-independent,v1,1,
 win-transaction-env-independent,v1,1,
-wrong-preimage-reverts,v1,1,
+wrong-preimage-reverts-p0,v1,1,
+wrong-preimage-reverts-p1,v1,1,

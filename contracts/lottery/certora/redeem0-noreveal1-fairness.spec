@@ -5,7 +5,7 @@
 // strictly increases `player0`'s ETH balance, leaves player1's ETH balance unchanged, and strictly decreases the
 // contract's ETH balance.
 
-rule following_protocol_pays_out {
+rule redeem0_noreveal1_fairness {
     env e;
     require _status(e) == 3;
     require e.block.number > currentContract.end_reveal;

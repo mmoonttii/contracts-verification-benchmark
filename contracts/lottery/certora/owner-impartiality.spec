@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 // For every non-reverting transaction, from any state where a winner is not yet determined, if the sender of the transaction is `owner` and such transaction changes the state variables of the contract then the same transaction, made by any non-owner address, under completely identical environments and storage, except from `msg.sender` must not revert and produce the same state modifications  
 
 /// @custom:run certoraRun versions/Lottery_v1.sol:Lottery --verify Lottery:certora/owner-impartiality.spec --optimistic_hashing --loop_iter 10 --optimistic_loop
