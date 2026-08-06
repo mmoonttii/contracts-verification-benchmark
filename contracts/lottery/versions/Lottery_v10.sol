@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version missing status check in win
 contract Lottery {
     address public owner;
 
@@ -133,8 +129,6 @@ contract Lottery {
 
     /// once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot
     function win() public {
-        require (status==Status.Win);
-	
         winner = computeWinner(player0, player1, secret0, secret1);
 
         (bool success,) = winner.call{value: address(this).balance}("");

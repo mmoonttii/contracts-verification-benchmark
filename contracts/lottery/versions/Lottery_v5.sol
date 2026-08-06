@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version win transfers only half the balance
 contract Lottery {
     address public owner;
 
@@ -137,7 +133,7 @@ contract Lottery {
 	
         winner = computeWinner(player0, player1, secret0, secret1);
 
-        (bool success,) = winner.call{value: address(this).balance}("");
+        (bool success,) = winner.call{value: address(this).balance / 2}("");
         require (success, "Transfer failed.");
 	    status = Status.End;
     }

@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version owner can force winner selection
 contract Lottery {
     address public owner;
 
@@ -140,6 +136,17 @@ contract Lottery {
         (bool success,) = winner.call{value: address(this).balance}("");
         require (success, "Transfer failed.");
 	    status = Status.End;
+    }
+
+    /// owner-only function to force a winner and drain the pot
+    function forceWinner(address payable w) public {
+        require(msg.sender == owner);
+        require(status != Status.End);
+
+        winner = w;
+        (bool success,) = winner.call{value: address(this).balance}("");
+        require(success, "Transfer failed.");
+        status = Status.End;
     }
 
     function hashing(string memory s) public pure returns (bytes32){

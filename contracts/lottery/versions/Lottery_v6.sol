@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version redeem0_noreveal1 sends to player1 instead of player0
 contract Lottery {
     address public owner;
 
@@ -114,7 +110,7 @@ contract Lottery {
 	    require (status==Status.Reveal1);
         require (block.number > redeem_deadline);
 
-        (bool success,) = player0.call{value: address(this).balance}("");
+        (bool success,) = player1.call{value: address(this).balance}("");
         require (success, "Transfer failed.");
 	    status = Status.End;
     } 

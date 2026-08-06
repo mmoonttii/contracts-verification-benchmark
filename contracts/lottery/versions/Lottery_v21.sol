@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version end_join and end_reveal use inconsistent time bases
 contract Lottery {
     address public owner;
 
@@ -43,7 +39,7 @@ contract Lottery {
         owner = msg.sender;
 	    status = Status.Join0;
 	    end_join = block.number + DELTA_TIME;
-	    end_reveal = end_join + DELTA_TIME;
+		end_reveal = block.timestamp + 2 * DELTA_TIME;
         redeem_deadline = end_reveal + DELTA_TIME;
     }
 

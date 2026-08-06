@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version redeem0_noreveal1 checks end_join instead of redeem_deadline
 contract Lottery {
     address public owner;
 
@@ -112,7 +108,7 @@ contract Lottery {
     /// if `player2` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal` plus a fixed constant)
     function redeem0_noreveal1() public {
 	    require (status==Status.Reveal1);
-        require (block.number > redeem_deadline);
+        require (block.number > end_join);
 
         (bool success,) = player0.call{value: address(this).balance}("");
         require (success, "Transfer failed.");

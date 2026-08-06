@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version redeem0_nojoin1 transfers only half the balance
 contract Lottery {
     address public owner;
 
@@ -74,7 +70,7 @@ contract Lottery {
 	    require (status == Status.Join1);
         require (block.number > end_join);
 
-        (bool success,) = player0.call{value: address(this).balance}("");
+        (bool success,) = player0.call{value: address(this).balance / 2}("");
         require (success, "Transfer failed.");
 	    status = Status.End;
     } 

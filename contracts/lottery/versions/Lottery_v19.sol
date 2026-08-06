@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version join1() does not require to match bet of player0
 contract Lottery {
     address public owner;
 
@@ -62,7 +58,7 @@ contract Lottery {
     function join1(bytes32 h) payable public {
         require (status == Status.Join1);
         require (h!=hash0);
-        require (msg.value == bet_amount);
+        require (msg.value >= MINIMUM_BET);
 
         player1 = payable(msg.sender);
         hash1 = h;	

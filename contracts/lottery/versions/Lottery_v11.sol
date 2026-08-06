@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version winner computation depends on block.timestamp
 contract Lottery {
     address public owner;
 
@@ -119,13 +115,13 @@ contract Lottery {
 	    status = Status.End;
     } 
     
-    function computeWinner(address payable p0, address payable p1, string memory s0, string memory s1) public pure returns (address payable) {
+    function computeWinner(address payable p0, address payable p1, string memory s0, string memory s1) public view returns (address payable) {
         uint256 l0 = bytes(s0).length;
         uint256 l1 = bytes(s1).length;
         
         address payable w;
         
-        if ((l0+l1) % 2 == 0)  w = p0;
+        if ((l0 + l1 + block.timestamp) % 2 == 0)  w = p0;
         else w = p1;
 
         return w;

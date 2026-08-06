@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version no preimage verification in reveal0
 contract Lottery {
     address public owner;
 
@@ -83,7 +79,6 @@ contract Lottery {
     function reveal0(string memory s) public {
         require (status == Status.Reveal0);
         require (msg.sender == player0);
-        require(hashing(s) == hash0);
 
         secret0 = s;
 	    status = Status.Reveal1;

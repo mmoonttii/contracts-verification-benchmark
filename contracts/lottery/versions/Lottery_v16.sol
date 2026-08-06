@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// player0 != player1?
-// Should the state functions have an upper bound?
-
-/// @custom:version conformant to specification
+/// @custom:version reveal0() does not update status
 contract Lottery {
     address public owner;
 
@@ -86,7 +82,6 @@ contract Lottery {
         require(hashing(s) == hash0);
 
         secret0 = s;
-	    status = Status.Reveal1;
     }
 
     /// if `player1` has not revealed, `player2` can redeem both players' bets after a given deadline (`end_reveal`); 
