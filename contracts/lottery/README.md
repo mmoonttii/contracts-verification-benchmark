@@ -37,6 +37,7 @@ The protocol followed by (honest) players is the following:
 - **one-step-deadlock-freedom-win**: For the Win state with a positive balance of the contract, there exist a non-reverting transaction that when executed leaves the contract ETH balance at zero
 - **owner-impartiality**: For every non-reverting transaction, from any state where a winner is not yet determined, if the sender of the transaction is `owner` and such transaction changes the state variables of the contract then the same transaction, made by any non-owner address, under completely identical environments and storage, except from `msg.sender` must not revert and produce the same state modifications
 - **owner-impartiality-eoa**: Assuming `player0` and `player1` are EOAs: for every non-reverting transaction, from any state where a winner is not yet determined, if the sender of the transaction is `owner` and such transaction changes the state variables of the contract then the same transaction, made by any non-owner address, under completely identical environments and storage, except from `msg.sender` must not revert and produce the same state modifications
+- **player1-should-match-bet**: If a join1 transaction is non-reverting then `msg.value` matched the bet from `player0`
 - **redeem0-noreveal1-fairness**: If the contract is in `Reveal1` status and evaluating the fair function on `secret0` and `player1`'s secret that is not yet revealed, would result in `player0` being the winner; then a successful `redeem0_noreveal1()` transaction strictly increases `player0`'s ETH balance, leaves player1's ETH balance unchanged, and strictly decreases the contract's ETH balance.
 - **redeem0-noreveal1-fairness-eoa**: Assuming `player0` and `player1` behave as EOAs: if the contract is in `Reveal1` status and evaluating the fair function on `secret0` and `player1`'s secret that is not yet revealed, would result in `player0` being the winner; then a successful `redeem0_noreveal1()` transaction strictly increases `player0`'s ETH balance, leaves player1's ETH balance unchanged, and strictly decreases the contract's ETH balance.
 - **sequentiality-of-protocol-join1**: A transaction call to `join1` will revert if the contract is in an earlier state than the one it is meant to transition out of
@@ -44,6 +45,8 @@ The protocol followed by (honest) players is the following:
 - **sequentiality-of-protocol-reveal1**: A transaction call to `reveal1` will revert if the contract is in an earlier state than the one it is meant to transition out of
 - **sequentiality-of-protocol-win**: A transaction call to `win` will revert if the contract is in an earlier state than the one it is meant to transition out of
 - **state-irreversible**: For every non-reverting transaction of the contract's state-transition functions, the contract's `status` after the transaction is strictly greater than its `status` before the call
+- **win-pays-fair-winner**: If the honest protocol would result in `expected_winner` to be the winner of the lottery, a non-reverting `win` transaction must increase `expected_winner` ETH balance by the pot
+- **win-pays-fair-winner-eoa**: Assuming `player0` and `player1` are EOAs: if the honest protocol would result in `expected_winner` to be the winner of the lottery, a non-reverting `win` transaction must increase `expected_winner` ETH balance by the pot
 - **win-transaction-env-independent**: The outcome of a non-reverting `win()` transaction is independent from environment-dependent state
 - **winner-computation-env-independent**: The results of evaluating the fair win function are independent from environment-dependent state
 - **wrong-preimage-reverts-p0**: If a `reveal0(s)` transaction does not revert, then `s` is a preimage of the committed hash
@@ -51,6 +54,27 @@ The protocol followed by (honest) players is the following:
 
 ## Versions
 - **v1**: conformant to specification
+- **v2**: redeem0_nojoin1 transfers only half the balance
+- **v3**: redeem1_noreveal0 transfers only half the balance
+- **v4**: redeem0_noreveal1 transfers only half the balance
+- **v5**: win transfers only half the balance
+- **v6**: redeem0_noreveal1 sends to player1 instead of player0
+- **v7**: missing status check in join1
+- **v8**: missing status check in reveal0
+- **v9**: missing status check in reveal1
+- **v10**: missing status check in win
+- **v11**: winner computation depends on block.timestamp
+- **v12**: no preimage verification in reveal0
+- **v13**: no preimage verification in reveal1
+- **v14**: owner can force winner selection
+- **v15**: redeem0_noreveal1 checks end_join instead of redeem_deadline
+- **v16**: reveal0() does not update status
+- **v17**: reveal1() does not update status
+- **v18**: redeem*() functions send ETH to msg.sender
+- **v19**: join1() does not require to match bet of player0
+- **v20**: end_reveal is equal to end_join
+- **v21**: end_join and end_reveal use inconsistent time bases
+- **v22**: win() transfers ETH balance to msg.sender
 
 ## Verification data
 
