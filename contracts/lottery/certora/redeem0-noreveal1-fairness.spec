@@ -5,10 +5,11 @@
 // strictly increases `player0`'s ETH balance, leaves player1's ETH balance unchanged, and strictly decreases the
 // contract's ETH balance.
 
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery --verify Lottery:certora/redeem0-noreveal1-fairness.spec --optimistic_hashing --optimistic_loop
 rule redeem0_noreveal1_fairness {
     env e;
     require _status(e) == 3;
-    require e.block.number > currentContract.end_reveal;
+    require e.block.number > currentContract.redeem_deadline;
 
     address _p0;
     require _p0 == currentContract.player0;

@@ -31,7 +31,7 @@ rule no_incentives_to_abort_eoa {
 
     reveal0(e_reveal0, secret0);
 
-    require e_redeem.block.number > currentContract.end_reveal(e_redeem);
+    require e_redeem.block.number > currentContract.redeem_deadline;
 
     mathint pre_p0_bal = nativeBalances[p0];
     mathint pre_p1_bal = nativeBalances[p1];
@@ -45,5 +45,5 @@ rule no_incentives_to_abort_eoa {
 
     assert post_p0_bal == pre_p0_bal + pre_contract_bal;
     assert post_contract_bal == 0;
-    assert post_p1_bal == post_p0_bal;
+    assert post_p1_bal == pre_p1_bal;
 }

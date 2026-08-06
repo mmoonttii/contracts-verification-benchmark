@@ -3,6 +3,7 @@
 // For the intermediate protocol state `Reveal0`, there exists a path to completion of the honest protocol from `Reveal0` to `End`
 // that empties the contract's balance to zero
 
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/honest-protocol-deadlock-freedom-reveal0.spec --optimistic_loop
 rule honest_protocol_deadlock_freedom_reveal0{
     require nativeBalances[currentContract] > 0;
     require currentContract.player0 != currentContract;

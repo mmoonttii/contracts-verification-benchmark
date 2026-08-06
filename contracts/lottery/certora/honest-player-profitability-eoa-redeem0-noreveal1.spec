@@ -18,7 +18,7 @@ rule honest_player_profitability_eoa_redeem0_noreveal1{
     mathint contract_bal_pre = nativeBalances[currentContract];
 
     require currentContract.status == Lottery.Status.Reveal1;
-    require e.block.number > currentContract.end_reveal;
+    require e.block.number > currentContract.redeem_deadline;
     require contract_bal_pre == 2 * bet;
 
     redeem0_noreveal1(e);

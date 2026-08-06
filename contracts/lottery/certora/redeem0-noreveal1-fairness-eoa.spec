@@ -9,7 +9,7 @@
 rule redeem0_noreveal1_fairness_eoa {
     env e;
     require _status(e) == 3;
-    require e.block.number > currentContract.end_reveal;
+    require e.block.number > currentContract.redeem_deadline;
 
     address _p0;
     require _p0 == currentContract.player0;
