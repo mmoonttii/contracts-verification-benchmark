@@ -1,103 +1,107 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-// Assuming `player0` and `player1` are EOAs: for every non-reverting transaction, from any state where a winner is not
-// yet determined, if the sender of the transaction is `owner` and such transaction changes the state variables of the
-// contract then the same transaction, made by any non-owner address, under completely identical environments and
-// storage, except from `msg.sender` must not revert and produce the same state modifications  
+// Assuming `player0` and `player1` are EOAs: in any state where the winner is not yet determined, for every
+// transaction whose sender is neither `player0` nor `player1`; if such transaction changes the contract storage,
+// then the same transaction (except for `msg.sender`), made by any EOA, in the same state, must produce the same
+// state modifications
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/owner-impartiality-eoa.spec --optimistic_hashing --link Lottery:player0=EOA --link Lottery:player1=EOA
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/owner-impartiality-eoa.spec --optimistic_hashing --link Lottery:player0=EOA0 --link Lottery:player1=EOA1
 rule owner_impartiality_eoa(method f)
 filtered {
-    f -> !f.isView && !f.isPure
+    f -> !f.isView &&
+         !f.isPure &&
+         f.contract == currentContract &&
+         f.selector != sig:join0(bytes32).selector &&
+         f.selector != sig:join1(bytes32).selector
 } {
-    address ownerAddr = currentContract.owner;
-    require ownerAddr != currentContract;
-    require ownerAddr != 0;
+    address addr;
+    require addr != currentContract;
+    require addr != 0;
     
-    address p0_pre = currentContract.player0;
+    address p0_pre  = currentContract.player0;
     require p0_pre != currentContract;
-    require p0_pre != ownerAddr;
+    require p0_pre != addr;
     require p0_pre != 0;
 
-    address p1_pre = currentContract.player1;
+    address p1_pre  = currentContract.player1;
     require p1_pre != currentContract;
-    require p1_pre != ownerAddr;
+    require p1_pre != addr;
     require p1_pre != 0;
 
     require p0_pre != p1_pre;
 
+    env e1;
+    require e1.msg.sender == addr;
 
-    env eOwner;
-    require eOwner.msg.sender == ownerAddr;
-
-    env eOther;
-    require eOther.msg.sender != ownerAddr;
-    require eOther.msg.sender != currentContract;
-    require eOther.msg.sender != 0;
+    env e2;
+    require e2.msg.sender != p0_pre;
+    require e2.msg.sender != p1_pre;
+    require e2.msg.sender != addr;
+    require e2.msg.sender != currentContract;
+    require e2.msg.sender != 0;
 
     // the only difference between the two envs is the caller
-    require eOther.block.number == eOwner.block.number;
-    require eOther.block.timestamp == eOwner.block.timestamp;
-    require eOther.msg.value == eOwner.msg.value;
+    require e2.block.number == e1.block.number;
+    require e2.block.timestamp == e1.block.timestamp;
+    require e2.msg.value == e1.msg.value;
 
     calldataarg args;
     
     require currentContract.winner == 0;
+
     // Save storage status, so that same call can be repeated
     storage initStorage = lastStorage;
 
     // contract state before
-    uint status_pre = _status(eOwner);
+    uint status_pre = _status(e1);
     mathint bet_pre = currentContract.bet_amount;
     bytes32 h0_pre  = currentContract.hash0;
     bytes32 h1_pre  = currentContract.hash1;
     uint ej_pre     = currentContract.end_join;
-    uint er_pre     = currentContract.end_reveal;
-    uint rd_pre     = currentContract.redeem_deadline;
+    uint er_pre     = currentContract.end_reveal0;
+    uint rd_pre     = currentContract.end_reveal1;
     address w_pre   = currentContract.winner;
     mathint bal_pre = nativeBalances[currentContract];
-    string s0_pre;
-    string s1_pre;
-    require s0_pre == secret0(eOwner);
-    require s1_pre == secret1(eOwner); 
+    string s0_pre;    require s0_pre == secret0(e1);
+    string s1_pre;    require s1_pre == secret1(e1);
 
-    // owner attempts the call from the initial snapshot
-    f(eOwner, args) at initStorage;
+    // addr attempts the call from the initial snapshot
+    f(e1, args) at initStorage;
 
-    bool ownerChangedState =
-        status_pre != _status(eOwner)                 ||
+    bool e1_changed_state =
+        status_pre != _status(e1)                     ||
         p0_pre     != currentContract.player0         || 
         p1_pre     != currentContract.player1         ||
         bet_pre    != currentContract.bet_amount      ||
         h0_pre     != currentContract.hash0           ||
         h1_pre     != currentContract.hash1           ||
         ej_pre     != currentContract.end_join        ||
-        er_pre     != currentContract.end_reveal      ||
-        rd_pre     != currentContract.redeem_deadline ||
+        er_pre     != currentContract.end_reveal0      ||
+        rd_pre     != currentContract.end_reveal1 ||
         w_pre      != currentContract.winner          ||
         bal_pre    != nativeBalances[currentContract] ||
-        s0_pre     != secret0(eOwner)                 ||
-        s1_pre     != secret1(eOwner);
+        s0_pre     != secret0(e1)                     ||
+        s1_pre     != secret1(e1);
 
-    // replay the exact same call, from the same snapshot, but as a non-owner
-    f@withrevert(eOther, args) at initStorage;
+    // replay the exact same call, from the same snapshot, as other user
+    f@withrevert(e2, args) at initStorage;
 
-    bool otherCouldRunFun = !lastReverted;
+    bool e2_could_run_fun = !lastReverted;
 
-    bool otherChangedState =
-        status_pre != _status(eOther)                 ||
+    bool e2_changed_state =
+        status_pre != _status(e2)                     ||
         p0_pre     != currentContract.player0         || 
         p1_pre     != currentContract.player1         ||
         bet_pre    != currentContract.bet_amount      ||
         h0_pre     != currentContract.hash0           ||
         h1_pre     != currentContract.hash1           ||
         ej_pre     != currentContract.end_join        ||
-        er_pre     != currentContract.end_reveal      ||
-        rd_pre     != currentContract.redeem_deadline ||
+        er_pre     != currentContract.end_reveal0      ||
+        rd_pre     != currentContract.end_reveal1 ||
         w_pre      != currentContract.winner          ||
         bal_pre    != nativeBalances[currentContract] ||
-        s0_pre     != secret0(eOther)                 ||
-        s1_pre     != secret1(eOther);
+        s0_pre     != secret0(e2)                     ||
+        s1_pre     != secret1(e2);
 
-    assert ownerChangedState => (otherCouldRunFun && otherChangedState);
+    assert e1_changed_state => (e2_could_run_fun && e2_changed_state);
 }

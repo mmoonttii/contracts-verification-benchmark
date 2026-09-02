@@ -6,11 +6,11 @@ Implementing this protocol properly is quite error-prone, since the protocol mus
 In this case, the protocol must still ensure that, on average, an honest player has at least the same payoff that they would have by interacting with another honest player. 
 
 The protocol followed by (honest) players is the following:
-1. `player1` joins the lottery by paying the bet and committing to a secret;
-2. `player2` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
-3. if `player2` has not joined, `player1` can redeem their bet after a given deadline (`end_commit`).
-4. `player1` reveals the first secret;
-5. if `player1` has not revealed, `player2` can redeem both players' bets after a given deadline (`end_reveal`); 
-6. once `player1` has revealed, `player2` reveals the secret;
-7. if `player2` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal` plus a fixed constant);
+1. `player0` joins the lottery by paying the bet and committing to a secret;
+2. `player1` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
+3. if `player1` has not joined, `player0` can redeem their bet after a given deadline (`end_join`).
+4. `player0` reveals the first secret;
+5. if `player0` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal0`); 
+6. once `player0` has revealed, `player1` reveals the secret;
+7. if `player1` has not revealed, `player0` can redeem both players' bets after a given deadline (`end_reveal1`);
 8. once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot.

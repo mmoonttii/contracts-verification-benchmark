@@ -1,30 +1,39 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-// Assuming player0 and player1 behave as EOAs: for the intermediate state `Reveal1`, there
-// exists a corresponding non-reverting transaction, made after the state's respective deadline, that strictly increases
-// the eligible honest player's ETH balance by exactly the amount they are owed, leaves the contract's ETH balance at
-// zero, and advances status to `End`
+// Assuming `player0` and `player1` behave as EOAs: in state `Reveal1`, a user can perform a non-reverting
+// transaction, made after the state's respective deadline, that strictly increases `player0`'s ETH balance
+// by exactly the pot, leaves the contract's ETH balance at zero, and advances status to `End`
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA.sol --verify Lottery:certora/honest-player-profitability-eoa-redeem0-noreveal1.spec --link Lottery:player0=EOA --link Lottery:player1=EOA
-rule honest_player_profitability_eoa_redeem0_noreveal1{
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/honest-player-profitability-eoa-redeem0-noreveal1.spec --link Lottery:player0=EOA0 --link Lottery:player1=EOA1
+rule honest_player_profitability_eoa_redeem0_noreveal1 (method f)
+filtered {
+    f -> !f.isView &&
+         !f.isPure &&
+         f.contract == currentContract &&
+         f.selector != sig:join0(bytes32).selector &&
+         f.selector != sig:join1(bytes32).selector
+} {
     env e;
-    require e.msg.value == 0;
+    calldataarg args;
 
-    address p0 = currentContract.player0;
-    uint256 bet = currentContract.bet_amount;
+    address p0  = currentContract.player0;
     require p0 != currentContract;
+
+    mathint bet = currentContract.bet_amount;
+    require bet >= MINIMUM_BET(e);
+    mathint pot = bet * 2;
 
     mathint p0_bal_pre       = nativeBalances[p0];
     mathint contract_bal_pre = nativeBalances[currentContract];
 
     require currentContract.status == Lottery.Status.Reveal1;
-    require e.block.number > currentContract.redeem_deadline;
-    require contract_bal_pre == 2 * bet;
+    require e.block.number > currentContract.end_reveal1;
+    require contract_bal_pre == pot;
 
-    redeem0_noreveal1(e);
+    f(e, args);
 
-    assert (
-        nativeBalances[p0] == p0_bal_pre + 2 * bet &&
+    satisfy (
+        nativeBalances[p0] == p0_bal_pre + pot &&
         nativeBalances[currentContract] == 0 &&
         currentContract.status == Lottery.Status.End
     );

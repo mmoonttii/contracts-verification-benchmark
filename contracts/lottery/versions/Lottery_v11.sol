@@ -27,26 +27,27 @@ contract Lottery {
     }
 
     uint public end_join;
-    uint public end_reveal;
-    uint public redeem_deadline;
+    uint public end_reveal0;
+    uint public end_reveal1;
     
     Status public status;
     
     uint constant DELTA_TIME = 1000;
-    uint constant MINIMUM_BET = 0.01 ether;
+    uint constant public MINIMUM_BET = 0.01 ether;
 
     constructor() {
         owner = msg.sender;
 	    status = Status.Join0;
 	    end_join = block.number + DELTA_TIME;
-	    end_reveal = end_join + DELTA_TIME;
-        redeem_deadline = end_reveal + DELTA_TIME;
+	    end_reveal0 = end_join + DELTA_TIME;
+        end_reveal1 = end_reveal0 + DELTA_TIME;
     }
 
-    /// `player1` joins the lottery by paying the bet and committing to a secret
+    /// `player0` joins the lottery by paying the bet and committing to a secret
     function join0(bytes32 h) payable public {
-        require (status == Status.Join0);
-        require (msg.value > MINIMUM_BET);
+        require(status == Status.Join0);
+        require(msg.value >= MINIMUM_BET);
+        require(block.number <= end_join);
 
         player0 = payable(msg.sender);
         hash0 = h;
@@ -54,68 +55,72 @@ contract Lottery {
         bet_amount = msg.value;
     }
 
-    /// `player2` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
+    /// `player1` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
     function join1(bytes32 h) payable public {
-        require (status == Status.Join1);
-        require (h!=hash0);
-        require (msg.value == bet_amount);
+        require(status == Status.Join1);
+        require(h!=hash0);
+        require(msg.value == bet_amount);
+        require(msg.sender != player0);
+        require(block.number <= end_join);
 
         player1 = payable(msg.sender);
         hash1 = h;	
     	status = Status.Reveal0;
     }
 
-    /// if `player2` has not joined, `player1` can redeem their bet after a given deadline (`end_commit`).
+    /// if `player1` has not joined, `player0` can redeem their bet after a given deadline (`end_commit`).
     function redeem0_nojoin1() public {
-	    require (status == Status.Join1);
-        require (block.number > end_join);
+	    require(status == Status.Join1);
+        require(block.number > end_join);
 
         (bool success,) = player0.call{value: address(this).balance}("");
-        require (success, "Transfer failed.");
+        require(success, "Transfer failed.");
 	    status = Status.End;
     } 
     
-    /// `player1` reveals the first secret
+    /// `player0` reveals the first secret
     function reveal0(string memory s) public {
-        require (status == Status.Reveal0);
-        require (msg.sender == player0);
+        require(status == Status.Reveal0);
+        require(block.number <= end_reveal0);
+        require(msg.sender == player0);
         require(hashing(s) == hash0);
 
         secret0 = s;
 	    status = Status.Reveal1;
     }
 
-    /// if `player1` has not revealed, `player2` can redeem both players' bets after a given deadline (`end_reveal`); 
+    /// if `player0` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal0`); 
     function redeem1_noreveal0() public {
-	    require (status == Status.Reveal0);
-        require (block.number > end_reveal);
+	    require(status == Status.Reveal0);
+        require(block.number > end_reveal0);
 
         (bool success,) = player1.call{value: address(this).balance}("");
-        require (success, "Transfer failed.");
+        require(success, "Transfer failed.");
 	    status = Status.End;
     } 
     
-    /// once `player1` has revealed, `player2` reveals the secret
+    /// once `player0` has revealed, `player1` reveals the secret
     function reveal1(string memory s) public {
-        require (status == Status.Reveal1);
-        require (msg.sender == player1);
+        require(status == Status.Reveal1);
+        require(block.number <= end_reveal1);
+        require(msg.sender == player1);
         require(hashing(s)==hash1);
 
         secret1 = s;
 	    status = Status.Win;
     }
 
-    /// if `player2` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal` plus a fixed constant)
+    /// if `player1` has not revealed, `player0` can redeem both players' bets after a given deadline (`end_reveal0` plus a fixed constant)
     function redeem0_noreveal1() public {
-	    require (status==Status.Reveal1);
-        require (block.number > redeem_deadline);
+	    require(status==Status.Reveal1);
+        require(block.number > end_reveal1);
 
         (bool success,) = player0.call{value: address(this).balance}("");
-        require (success, "Transfer failed.");
+        require(success, "Transfer failed.");
 	    status = Status.End;
     } 
     
-    function computeWinner(address payable p0, address payable p1, string memory s0, string memory s1) public view returns (address payable) {
+    function compute_winner(address payable p0, address payable p1, string memory s0, string memory s1) public view returns (address payable) {
         uint256 l0 = bytes(s0).length;
         uint256 l1 = bytes(s1).length;
         
@@ -129,12 +134,12 @@ contract Lottery {
 
     /// once both secrets have been revealed, the winner, who is fairly determined as a function of the two revealed secrets, can redeem the whole pot
     function win() public {
-        require (status==Status.Win);
+        require(status==Status.Win);
 	
-        winner = computeWinner(player0, player1, secret0, secret1);
+        winner = compute_winner(player0, player1, secret0, secret1);
 
         (bool success,) = winner.call{value: address(this).balance}("");
-        require (success, "Transfer failed.");
+        require(success, "Transfer failed.");
 	    status = Status.End;
     }
 
