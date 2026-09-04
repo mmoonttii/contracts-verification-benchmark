@@ -3,14 +3,12 @@
 // After a non-reverting `reveal0` transaction, assuming `player0` is an EOA, if no `reveal1` transaction is performed 
 // before the deadline, then `player0` can redeem the pot
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/no-incentives-to-abort-eoa.spec --link Lottery:player0=EOA0 --link Lottery:player1=EOA1 --optimistic_hashing
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/no-incentives-to-abort-eoa.spec --link Lottery:player0=EOA0 --link Lottery:player1=EOA1 --optimistic_hashing --optimistic_loop
 rule no_incentives_to_abort_eoa (method f)
 filtered {
     f -> !f.isView &&
          !f.isPure &&
-         f.contract == currentContract &&
-         f.selector != sig:join0(bytes32).selector &&
-         f.selector != sig:join1(bytes32).selector
+         f.contract == currentContract
 } {
     env e_reveal0;
     calldataarg args_reveal0;
@@ -28,6 +26,7 @@ filtered {
     mathint pre_p1_bal = nativeBalances[p1];
     mathint pre_contract_bal = nativeBalances[currentContract];
 
+    require pre_contract_bal > 0;
     require currentContract.status == Lottery.Status.Reveal1;
     f(e_redeem, args_redeem);
         

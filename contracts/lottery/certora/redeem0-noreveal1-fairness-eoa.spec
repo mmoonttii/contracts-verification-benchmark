@@ -5,7 +5,7 @@
 // increases `player0`'s ETH balance, leaves `player1`'s ETH balance unchanged, and strictly decreases the contract's
 // ETH balance.
 
-/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/redeem0-noreveal1-fairness-eoa.spec --link Lottery:player0=EOA0 --link Lottery:player1=EOA1 --optimistic_hashing
+/// @custom:run certoraRun versions/Lottery_v1.sol:Lottery versions/lib/EOA0.sol versions/lib/EOA1.sol --verify Lottery:certora/redeem0-noreveal1-fairness-eoa.spec --link Lottery:player0=EOA0 --link Lottery:player1=EOA1 --optimistic_hashing --optimistic_loop
 rule redeem0_noreveal1_fairness_eoa {
     env e;
     require _status(e) == 3;

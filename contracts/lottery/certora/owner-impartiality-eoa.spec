@@ -10,9 +10,7 @@ rule owner_impartiality_eoa(method f)
 filtered {
     f -> !f.isView &&
          !f.isPure &&
-         f.contract == currentContract &&
-         f.selector != sig:join0(bytes32).selector &&
-         f.selector != sig:join1(bytes32).selector
+         f.contract == currentContract
 } {
     address addr;
     require addr != currentContract;
@@ -76,8 +74,8 @@ filtered {
         h0_pre     != currentContract.hash0           ||
         h1_pre     != currentContract.hash1           ||
         ej_pre     != currentContract.end_join        ||
-        er_pre     != currentContract.end_reveal0      ||
-        rd_pre     != currentContract.end_reveal1 ||
+        er_pre     != currentContract.end_reveal0     ||
+        rd_pre     != currentContract.end_reveal1     ||
         w_pre      != currentContract.winner          ||
         bal_pre    != nativeBalances[currentContract] ||
         s0_pre     != secret0(e1)                     ||
@@ -96,8 +94,8 @@ filtered {
         h0_pre     != currentContract.hash0           ||
         h1_pre     != currentContract.hash1           ||
         ej_pre     != currentContract.end_join        ||
-        er_pre     != currentContract.end_reveal0      ||
-        rd_pre     != currentContract.end_reveal1 ||
+        er_pre     != currentContract.end_reveal0     ||
+        rd_pre     != currentContract.end_reveal1     ||
         w_pre      != currentContract.winner          ||
         bal_pre    != nativeBalances[currentContract] ||
         s0_pre     != secret0(e2)                     ||

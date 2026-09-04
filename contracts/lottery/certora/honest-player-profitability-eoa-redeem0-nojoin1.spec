@@ -9,9 +9,7 @@ rule honest_player_profitability_eoa_redeem0_nojoin1 (method f)
 filtered {
     f -> !f.isView &&
          !f.isPure &&
-         f.contract == currentContract &&
-         f.selector != sig:join0(bytes32).selector &&
-         f.selector != sig:join1(bytes32).selector
+         f.contract == currentContract
 } {
     env e;
     calldataarg args;

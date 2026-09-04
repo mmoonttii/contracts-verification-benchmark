@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-// NOTES: committed string/hash should be longer than 0?
-// Should the state functions have an upper bound?
-
 /// @custom:version conformant to specification
 contract Lottery {
     address public owner;
