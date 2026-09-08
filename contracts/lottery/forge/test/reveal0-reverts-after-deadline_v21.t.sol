@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In this version `reveal0` has no upper deadline: its requirements are only `status == Status.Reveal0`, `msg.sender == player0` and `hashing(s) == hash0`. The check `block.number <= end_reveal0` present in the other versions is missing, so `player0` can still reveal after `end_reveal0` has passed.
-// COUNTEREXAMPLE: After both players join, the contract is in `Status.Reveal0`. At any block with `block.number > end_reveal0`, `player0` calls `reveal0(s0)` with the correct preimage. All the remaining requirements hold, so the transaction succeeds and moves the contract to `Status.Reveal1`, violating the property.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

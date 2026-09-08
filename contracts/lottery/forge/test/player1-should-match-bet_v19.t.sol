@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: `join1` only requires `msg.value >= MINIMUM_BET`; it never requires `msg.value == bet_amount` (the amount stored by `join0`). Therefore a `join1` transaction can succeed with a different bet.
-// COUNTEREXAMPLE: `player0` calls `join0(h0)` with `msg.value = 0.01 ether`, so `bet_amount = 0.01 ether`. A different EOA then calls `join1(h1)` with `msg.value = 0.02 ether`, where `h1 != h0`. All `join1` requirements pass, so the transaction does not revert even though `msg.value != bet_amount`.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

@@ -1,7 +1,3 @@
-// ANSWER: TRUE
-// EXPLANATION: `reveal1(s)` can succeed only when `status == Reveal1`, which is reached after `reveal0` has verified `hashing(s0) == hash0`. However, `reveal1` itself does not check `hashing(s) == hash1`; therefore the property is FALSE.
-// COUNTEREXAMPLE: Player 0 commits `hash0 = hashing("a")`, player 1 joins with `hash1 = hashing("b")`, and player 0 successfully calls `reveal0("a")`. The contract enters `Reveal1`. Player 1 can then call `reveal1("c")`, where `hashing("c") != hash1`; the call succeeds because `reveal1` has no hash check.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

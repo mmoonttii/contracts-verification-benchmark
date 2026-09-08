@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: `redeem0_noreveal1` only requires `block.number > end_join`, not `block.number > end_reveal1`. Since `end_reveal1 = end_join + 2000`, the function can execute successfully during the interval after `end_join` but before or at `end_reveal1`.
-// COUNTEREXAMPLE: After both players join and player0 reveals, the contract reaches `Status.Reveal1`. At any block with `end_join < block.number <= end_reveal1`, an EOA calls `redeem0_noreveal1()`. The `require(status==Status.Reveal1)` and `require(block.number > end_join)` checks both pass, so the transaction succeeds and transfers the contract balance to `player0`, violating the property.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

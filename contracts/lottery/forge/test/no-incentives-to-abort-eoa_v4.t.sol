@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: After a successful `reveal0`, the contract enters `Status.Reveal1`. If `reveal1` is not performed before `end_reveal1`, the only redemption function is `redeem0_noreveal1`, which sends only `address(this).balance / 2` to `player0`, not the whole pot. Thus `player0` cannot redeem the entire pot.
-// COUNTEREXAMPLE: Let `player0` and `player1` each join with `bet_amount = 1 ether`, and let `reveal0` succeed. The contract then holds 2 ETH and has status `Reveal1`. Suppose no `reveal1` is performed and a transaction occurs after `end_reveal1`. `player0` calls `redeem0_noreveal1()`. The function transfers `address(this).balance / 2 = 1 ether` to `player0` and sets status to `End`, leaving 1 ETH in the contract. Therefore, the stated property is violated.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

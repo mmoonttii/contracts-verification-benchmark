@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: `compute_winner` depends on `block.timestamp` in addition to its explicit inputs. Therefore, identical `p0`, `p1`, `s0`, and `s1` can produce different winners under different environments/timestamps.
-// COUNTEREXAMPLE: Let `p0 = address(1)`, `p1 = address(2)`, `s0 = "a"`, and `s1 = "b"`. If `block.timestamp` is even, `(1 + 1 + timestamp) % 2 == 0`, so the function returns `p0`. If the same inputs are evaluated with an odd `block.timestamp`, it returns `p1`.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

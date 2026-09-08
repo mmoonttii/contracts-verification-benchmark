@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In status `Reveal1` after `end_reveal1`, `redeem0_noreveal1()` is the only deadline-based recovery function, but it sends only `address(this).balance / 2` to `player0`, then sets `status = End`. `win()` can send the entire pot, but it sends it to `winner`, which may be `player1` depending on the revealed secret lengths. Therefore the property does not always hold.
-// COUNTEREXAMPLE: `player0` deposits 1 ETH with `join0`, `player1` deposits 1 ETH with `join1`, and both reveal valid secrets with lengths whose sum is odd (e.g. `secret0 = "a"`, `secret1 = ""`). After `end_reveal1`, status is `Reveal1` and the pot is 2 ETH. Calling `redeem0_noreveal1()` sends only 1 ETH to `player0` and leaves 1 ETH in the contract. Calling `win()` instead makes `compute_winner()` select `player1` because the combined length is odd, so the 2 ETH goes to `player1`, not `player0`. Thus no such transaction achieves all three stated conditions.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

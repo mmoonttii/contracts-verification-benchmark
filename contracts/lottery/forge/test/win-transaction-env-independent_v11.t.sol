@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: `win()` calls `compute_winner()`, whose result depends on `block.timestamp`. Thus two otherwise identical non-reverting `win` transactions can produce different winners if executed in blocks with different timestamps. The subsequent state also differs because `winner` is assigned the computed address.
-// COUNTEREXAMPLE: Consider a state with `status == Win`, both secrets already revealed, `player0 != player1`, and `bytes(secret0).length + bytes(secret1).length` even. A `win()` transaction in a block with an even `block.timestamp` sets `winner = player0`; a `win()` transaction from the same pre-transaction state in a block with an odd `block.timestamp` sets `winner = player1`. Both transactions can be non-reverting, but their results differ.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

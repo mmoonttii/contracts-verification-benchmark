@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: `reveal0` successfully stores `secret0` but does not change `status` from `Reveal0` to `Reveal1`. After `end_reveal0`, the only applicable redemption function is `redeem1_noreveal0`, which transfers the entire balance to `player1`, not `player0`. Therefore, `player0` cannot redeem the pot through the contract.
-// COUNTEREXAMPLE: `player0` calls `join0(hash0)` and `player1` calls `join1(hash1)`, entering `Reveal0`. `player0` then performs a non-reverting `reveal0(s)` with `hashing(s) == hash0`. The status remains `Reveal0`. After `block.number > end_reveal0`, `redeem1_noreveal0()` can be called, but its transfer is `player1.call{value: address(this).balance}("")`. There is no valid path allowing `player0` to redeem the pot.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

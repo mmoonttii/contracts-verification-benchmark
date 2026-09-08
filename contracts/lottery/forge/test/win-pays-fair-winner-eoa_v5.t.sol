@@ -1,23 +1,3 @@
-// ANSWER: FALSE
-
-// EXPLANATION: In `win()`, the contract correctly computes `winner = compute_winner(player0, player1, secret0, secret1)`, but it transfers only half of the pot to the winner:
-// ```solidity
-// (bool success,) = winner.call{value: address(this).balance / 2}("");
-// ```
-// The winner's ETH balance therefore increases by `pot / 2` instead of `pot`, and the contract keeps the other half forever, since `status` is set to `End` and no other function is callable in that state.
-
-// COUNTEREXAMPLE:
-// 1. `player0` calls `join0` with commitment to secret `"aa"` (length 2) and deposits `1 ether`.
-// 2. `player1` calls `join1` with commitment to secret `"bb"` (length 2) and deposits `1 ether`.
-// 3. `player0` reveals `"aa"`.
-// 4. `player1` reveals `"bb"`.
-
-// Now `status == Win`, the pot is `2 ether`, and the honest protocol computes:
-// * `len("aa") + len("bb") = 2 + 2 = 4` (even),
-// * so `expected_winner = player0`.
-// 5. An EOA calls `win()`.
-// The transaction does not revert and sets `winner = player0`, but transfers only `1 ether` to `player0` while `1 ether` remains locked in the contract. `player0`'s ETH balance increases by half the pot instead of the whole pot, violating the property.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

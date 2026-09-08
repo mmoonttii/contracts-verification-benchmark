@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In status `Reveal1`, the only post-deadline redemption function is `redeem0_noreveal1()`. After `end_reveal1`, it transfers the entire pot to `player1`, not `player0`, via `player1.call{value: address(this).balance}("")`. It then sets `status = Status.End`. Since `player0 != player1` is enforced by `join1`, this cannot strictly increase `player0`'s balance by the pot.
-// COUNTEREXAMPLE: Let EOAs A and B be `player0` and `player1`. After A calls `join0` with a valid hash and at least `MINIMUM_BET`, B calls `join1` with an equal bet and a different hash, and A reveals successfully, the contract reaches `Reveal1` with both bets in its balance. If no reveal by B occurs and a transaction is made at any block `> end_reveal1`, `redeem0_noreveal1()` succeeds and transfers the entire contract balance to B (`player1`), leaving the contract balance zero and status `End`, while A's balance does not increase by the pot.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

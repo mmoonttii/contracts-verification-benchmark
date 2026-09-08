@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In `Reveal1`, `redeem0_noreveal1` sends the entire contract balance to `msg.sender`, not necessarily to `player0`. The function has no requirement that `msg.sender == player0`. Therefore, a non-reverting EOA other than `player0` can call it, receiving the whole balance while `player0`'s balance remains unchanged.
-// COUNTEREXAMPLE: Let `player0 = A`, `player1 = B`, and suppose both players have revealed secrets such that `compute_winner(A, B, secret0, secret1) == A`. The contract is then in `Reveal1` with a positive ETH balance. Before the deadline, `B` (or any other EOA `C != A`) submits `redeem0_noreveal1` after `block.number > end_reveal1`. The call succeeds and transfers `address(this).balance` to `B` (or `C`), then sets `status = End`. Thus `player0`'s ETH balance does not strictly increase, while the contract balance strictly decreases.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

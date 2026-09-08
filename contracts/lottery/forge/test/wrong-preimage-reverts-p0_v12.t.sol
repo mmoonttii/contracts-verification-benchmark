@@ -1,7 +1,3 @@
-// ANSWER: TRUE
-// EXPLANATION: A successful `reveal0(s)` requires `status == Status.Reveal0`, `msg.sender == player0`, and only stores `s` in `secret0`; it does not require `hashing(s) == hash0`. However, the stated property is therefore FALSE.
-// COUNTEREXAMPLE: After `join0(h)` and `join1(h1)`, the contract is in `Reveal0`. Player0 calls `reveal0("wrong")` with `hash0 != keccak256(abi.encodePacked("wrong"))`. The transaction succeeds because `reveal0` has no hash check, violating the property.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

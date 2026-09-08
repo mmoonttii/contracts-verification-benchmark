@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: After a non-reverting `reveal0`, the contract enters `Status.Reveal1`. If `reveal1` is not performed before `end_reveal1`, `redeem0_noreveal1()` is callable after the deadline, but it sends the entire pot to `player1`, not `player0`. Thus `player0` has no function that lets them redeem the pot in this state.
-// COUNTEREXAMPLE: Let EOAs A and B be `player0` and `player1`. A calls `join0(h0)` with 0.01 ETH, B calls `join1(h1)` with 0.01 ETH, and A calls `reveal0(s0)` where `hashing(s0) == h0`. This transaction succeeds and sets `status = Reveal1`. B never calls `reveal1`. After `block.number > end_reveal1`, A cannot call `redeem0_noreveal1()` because that function transfers `address(this).balance` to `player1` (B), then ends the lottery. Hence A cannot redeem the pot.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

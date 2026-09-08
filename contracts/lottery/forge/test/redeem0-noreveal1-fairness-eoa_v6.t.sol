@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In `Reveal1`, `redeem0_noreveal1()` transfers the entire contract balance to `player1`, not `player0`: `player1.call{value: address(this).balance}("")`. Thus a successful call strictly increases `player1`'s balance while leaving `player0`'s balance unchanged. This contradicts the property.
-// COUNTEREXAMPLE: Let `player0` join with secret `"a"` and `player1` join with secret `"bcd"`, with equal bets of at least `MINIMUM_BET`. Both hashes differ, and after `reveal0("a")` and `reveal1("bcd")`, the contract is in `Reveal1`. Since `bytes("a").length + bytes("bcd").length = 4` is even, `compute_winner` would select `player0`. After `block.number > end_reveal1`, `player0` (or any EOA) calls `redeem0_noreveal1()`. Assuming `player1` is an EOA, the transfer succeeds: the contract balance strictly decreases and `player1` receives the entire pot, while `player0`'s balance is unchanged.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

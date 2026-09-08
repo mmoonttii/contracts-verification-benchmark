@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In status `Join1`, the only post-deadline redemption function is `redeem0_nojoin1()`. It sends `address(this).balance / 2` to `player0`, not exactly `bet_amount`, and then sets `status = Status.End`. Since the contract normally holds exactly `bet_amount` at this point, `player0` receives only half the bet and the contract retains the other half. Thus the stated property is not always satisfied.
-// COUNTEREXAMPLE: Let an EOA A call `join0(h)` with `msg.value = 0.01 ether` before `end_join`, making `player0 = A`, `bet_amount = 0.01 ether`, and `status = Join1`. After `block.number > end_join`, A calls `redeem0_nojoin1()`. The call succeeds, but `player0` receives `address(this).balance / 2 = 0.005 ether`, while the contract retains `0.005 ether`. Therefore the received amount is not exactly the bet and the contract balance is not zero.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

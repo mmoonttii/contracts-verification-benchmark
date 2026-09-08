@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In status `Win`, the only balance-reducing function is `win()`. It transfers `address(this).balance / 2` to `winner`, then sets `status = Status.End`. Thus, for any positive balance greater than 1 wei, a positive balance remains after the transaction, and no function callable in `End` can drain it.
-// COUNTEREXAMPLE: Let EOA A call `join0(hashing("a"))` with 0.01 ETH before `end_join`, and EOA B call `join1(hashing("b"))` with 0.01 ETH before `end_join`. A then calls `reveal0("a")`, and B calls `reveal1("b")` within the reveal deadlines. The contract is now in `Win` with balance 0.02 ETH. Any EOA can call `win()`, but it transfers only `0.02 ether / 2 = 0.01 ether` and leaves 0.01 ETH in the contract while changing status to `End`. No subsequent function can empty that remaining balance.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";

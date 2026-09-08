@@ -1,7 +1,3 @@
-// ANSWER: FALSE
-// EXPLANATION: In status `Join1`, the only function that can withdraw the contract’s balance before `status` changes is `redeem0_nojoin1()`. It transfers only `address(this).balance / 2` to `player0`, then sets `status = Status.End`; therefore, for any positive balance, a positive remainder remains (and with a 1-wei balance, it transfers 0). Thus no user transaction can empty the contract balance while remaining in the `Join1` state.
-// COUNTEREXAMPLE: Deploy the contract, then have an EOA call `join0(...)` with `msg.value = 0.01 ether`. The contract is now in `Status.Join1` with balance `0.01 ether`. After `block.number > end_join`, the EOA `player0` calls `redeem0_nojoin1()`. The call succeeds and transfers `address(this).balance / 2 = 0.005 ether`, leaving `0.005 ether` in the contract. Hence the balance is not emptied.
-
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";
