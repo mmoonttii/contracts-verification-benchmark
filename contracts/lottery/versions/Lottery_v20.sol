@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-/// @custom:version `reveal1` has no upper deadline
+/// @custom:version win() transfers ETH balance to msg.sender
 contract Lottery {
     address public owner;
 
@@ -55,7 +55,7 @@ contract Lottery {
         bet_amount = msg.value;
     }
 
-    /// `player0` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
+    /// `player1` joins the lottery by paying the bet and committing to another secret (the bet is the same for each player)
     function join1(bytes32 h) payable public {
         require(status == Status.Join1);
         require(h!=hash0);
@@ -68,7 +68,7 @@ contract Lottery {
     	status = Status.Reveal0;
     }
 
-    /// if `player0` has not joined, `player0` can redeem their bet after a given deadline (`end_join`).
+    /// if `player1` has not joined, `player0` can redeem their bet after a given deadline (`end_commit`).
     function redeem0_nojoin1() public {
 	    require(status == Status.Join1);
         require(block.number > end_join);
@@ -89,7 +89,7 @@ contract Lottery {
 	    status = Status.Reveal1;
     }
 
-    /// if `player0` has not revealed, `player0` can redeem both players' bets after a given deadline (`end_reveal0`); 
+    /// if `player0` has not revealed, `player1` can redeem both players' bets after a given deadline (`end_reveal0`); 
     function redeem1_noreveal0() public {
 	    require(status == Status.Reveal0);
         require(block.number > end_reveal0);
@@ -99,17 +99,18 @@ contract Lottery {
 	    status = Status.End;
     } 
     
-    /// once `player0` has revealed, `player0` reveals the secret
+    /// once `player0` has revealed, `player1` reveals the secret
     function reveal1(string memory s) public {
         require(status == Status.Reveal1);
+        require(block.number <= end_reveal1);
         require(msg.sender == player1);
-        require(hashing(s) == hash1);
+        require(hashing(s)==hash1);
 
         secret1 = s;
 	    status = Status.Win;
     }
 
-    /// if `player0` has not revealed, `player0` can redeem both players' bets after a given deadline (`end_reveal1`)
+    /// if `player1` has not revealed, `player0` can redeem both players' bets after a given deadline (`end_reveal0` plus a fixed constant)
     function redeem0_noreveal1() public {
 	    require(status==Status.Reveal1);
         require(block.number > end_reveal1);
@@ -137,7 +138,7 @@ contract Lottery {
 	
         winner = compute_winner(player0, player1, secret0, secret1);
 
-        (bool success,) = winner.call{value: address(this).balance}("");
+        (bool success,) = msg.sender.call{value: address(this).balance}("");
         require(success, "Transfer failed.");
 	    status = Status.End;
     }

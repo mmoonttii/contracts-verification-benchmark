@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.13;
 import { Test } from "forge-std/Test.sol";
-import { Lottery } from "../src/Lottery_v24.sol";
+import { Lottery } from "../src/Lottery_v22.sol";
 
 contract LotteryTest is Test {
   Lottery lottery;
