@@ -81,9 +81,9 @@ contract Lottery {
     /// `player0` reveals the first secret
     function reveal0(string memory s) public {
         require(status == Status.Reveal0);
+        require(block.number <= end_reveal0);
         require(msg.sender == player0);
         require(hashing(s) == hash0);
-        require(block.number <= end_reveal0);
 
         secret0 = s;
 	    status = Status.Reveal1;
