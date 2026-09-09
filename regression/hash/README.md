@@ -7,6 +7,8 @@ The property hash-can-collide should pass because there may be two strings that 
 
 ## Properties
 - **hash-can-collide**: It is possible that two different preimages have the same hash
+- **hash-congruence**: Two equal strings always have the same hash
+- **hash-negate**: It is possible that two different preimages have the same hash, encoded by refutation
 
 ## Ground truth
 
@@ -18,21 +20,21 @@ The property hash-can-collide should pass because there may be two strings that 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | hash-can-collide |
-|--------|------------------|
-| **v1** | FN!              |
+|        | hash-can-collide | hash-congruence  | hash-negate      |
+|--------|------------------|------------------|------------------|
+| **v1** | FN!              | FN!              | TP!              |
  
 
 #### ELD
-|        | hash-can-collide |
-|--------|------------------|
-| **v1** | FN!              |
+|        | hash-can-collide | hash-congruence  | hash-negate      |
+|--------|------------------|------------------|------------------|
+| **v1** | FN!              | FN!              | TP!              |
  
 
 
 ### Certora
-|        | hash-can-collide |
-|--------|------------------|
-| **v1** | FN!              |
+|        | hash-can-collide | hash-congruence  | hash-negate      |
+|--------|------------------|------------------|------------------|
+| **v1** | FN!              | TP!              | TP!              |
  
 
